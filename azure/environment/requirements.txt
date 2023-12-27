@@ -1,0 +1,7 @@
+ultralytics
+onnx>=1.12.0
+mltable
+azure-ai-ml
+azure-identity
+azureml-mlflow
+mlflow

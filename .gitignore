@@ -163,3 +163,4 @@ cython_debug/
 yolo-env/*
 data/*
 !data/.gitkeep
+config.ini
