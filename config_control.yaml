@@ -1,0 +1,7 @@
+path: B:\multispectral-ped-detection\data\DOTA_CONTROL
+train: images/train
+val: images/val
+test: images/test
+
+nc: 3
+names: ["person", "people", "cyclist"]

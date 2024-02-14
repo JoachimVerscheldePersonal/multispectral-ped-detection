@@ -1,6 +1,0 @@
-path: C:\Repositories\OpenUniversiteit\multispectral-ped-detection\data\sample_dataset\DOTA
-train: images/train
-val: images/val
-
-nc: 3
-names: ["person", "people", "cyclist"]

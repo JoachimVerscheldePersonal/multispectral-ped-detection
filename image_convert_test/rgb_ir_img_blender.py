@@ -74,6 +74,9 @@ for idx in tqdm.tqdm(range(len(image_vis_lst))):
     merge_file = image_vis_lst[idx].replace("visible", "blended")
     filen = os.path.basename(image_vis_lst[idx])
 
+    if os.path.exists(merge_file):
+        continue
+
     output_dir = os.path.dirname(merge_file)
     if os.path.isdir(output_dir) != True:
         os.makedirs(output_dir)
@@ -88,5 +91,5 @@ for idx in tqdm.tqdm(range(len(image_vis_lst))):
     if ret != True:
         print("Could not write blended image, exiting!")
         exit(1)
-        
+      
 print("Conversion complete.")

@@ -67,7 +67,8 @@ class VOC2COCO:
     def convert(self,
                 voc_annotations_paths: list[str],
                 coco_annotations_output_file: str,
-                night_prefix:bool = False) -> None:
+                image_base_path: str,
+                night_prefix: bool = False) -> None:
         """
         Converts the input annotations to COCO format and saves them in the desired output folder
 
@@ -81,7 +82,8 @@ class VOC2COCO:
             annotation_paths=voc_annotations_paths,
             label2id=self.get_label2id(),
             output_jsonpath=coco_annotations_output_file,
-            night_prefix = night_prefix
+            image_base_path=image_base_path,
+            night_prefix
         )
 
     def get_label2id(self) -> dict[str, int]:
@@ -93,26 +95,48 @@ class VOC2COCO:
         """
         return {"person":1, "people":2, "cyclist":3}
 
-    def get_image_info(self, annotation_root: ET.Element | Any, image_id: int, night_prefix: bool = False) -> dict[str , Any]:
+    def rename_image_and_get_info(self, annotation_root: ET.Element | Any, image_id: int, image_base_path: str, night_prefix: bool = False) -> dict[str , Any]:
         """
-        Returns information about the image in COCO format
+        Renames the image and gets the new information about the image in COCO format.
+        The renaming is necessary because there are duplicate image names (different folders containing the images with the same name)
 
         Args:
             annotation_root (ET.Element | Any): the XML root of the annotation file
             image_id (int): the ID of the image
+            image_base_path (str): the base path where to find the images to rename
             night_prefix (bool, optional): Whether or not the night_ prefix has to be added to the output name. Defaults to False.
 
         Returns:
             dict[str , Any]: Returns a dictionary of information about the image in COCO format
         """
-        voc_filename = annotation_root.findtext('filename')
-        filename = voc_filename[voc_filename.rfind('/')+1:]
+        voc_filename = f"{annotation_root.findtext('filename')}.jpg"
+        old_file_name_path_parts = voc_filename.split("/")
+        visible_file_path = os.path.join(image_base_path, *old_file_name_path_parts[:-1],"visible",old_file_name_path_parts[-1])
+        blended_file_path = os.path.join(image_base_path, *old_file_name_path_parts[:-1],"blended",old_file_name_path_parts[-1])
+        
+        new_filename = f"{str(image_id).zfill(10)}.jpg"
+
+        if night_prefix:
+            new_filename = f"n_{new_filename}"
+        
+        base_path_parts = image_base_path.split("\\")
+        base_path_parts.remove('')
+
+        new_visible_file_path = os.path.join(*base_path_parts[:-2],"images_renamed",base_path_parts[-1] ,"visible",new_filename)
+        new_blended_file_path = os.path.join(*base_path_parts[:-2],"images_renamed",base_path_parts[-1] ,"blended",new_filename)
+        
+        if os.path.exists(visible_file_path) and not os.path.exists(new_visible_file_path):
+            os.rename(visible_file_path, new_visible_file_path)
+        
+        if os.path.exists(blended_file_path) and not os.path.exists(new_blended_file_path):
+            os.rename(blended_file_path, new_blended_file_path)
+        
         size = annotation_root.find('size')
         width = int(size.findtext('width'))
         height = int(size.findtext('height'))
 
         image_info = {
-            'file_name': filename if not night_prefix else f'night_{filename}',
+            'file_name': new_filename,
             'height': height,
             'width': width,
             'id': image_id
@@ -157,7 +181,9 @@ class VOC2COCO:
                                  annotation_paths: list[str],
                                  label2id: dict[str, int],
                                  output_jsonpath: str,
-                                 night_prefix:bool = False):
+                                 image_base_path: str,
+                                 night_prefix: bool = False,
+                                 ):
         """
         Perfroms  the full conversion of the input annotations to the COCO format and saves them in the desired output location
 
@@ -181,7 +207,7 @@ class VOC2COCO:
             annotation_tree = ET.parse(annotation_path)
             annotation_root = annotation_tree.getroot()
 
-            img_info = self.get_image_info(annotation_root=annotation_root, image_id= image_id, night_prefix= night_prefix)
+            img_info = self.rename_image_and_get_info(annotation_root=annotation_root, image_id= image_id, image_base_path=image_base_path,night_prefix)
             output_json_dict['images'].append(img_info)
 
             for obj in annotation_root.findall('object'):
