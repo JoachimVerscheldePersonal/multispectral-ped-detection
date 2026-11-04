@@ -1,16 +1,6 @@
-# Seeing pedestrians after dark
+# Multispectral pedestrian detection after dark
 
-### Multispectral pedestrian detection with YOLOv8
-
-**Can thermal images help a compact object detector find pedestrians in low light?** This project investigates that question by comparing visible-light (RGB) images with RGB + infrared blends on the KAIST multispectral pedestrian dataset.
-
-Built for *Research Methods for Artificial Intelligence* at the **Open University of the Netherlands**, the project covers image fusion, annotation conversion, model training in Azure ML, and evaluation by lighting condition and pedestrian occlusion.
-
-[Results](#what-we-found) · [Explore the project](#explore-the-project) · [Run the experiment](#run-the-experiment) · [Research report](docs/RMAI_report_yolov8.pdf)
-
-## See the difference at night
-
-The same nighttime scene, evaluated with the RGB control model and the RGB + infrared blended model:
+Comparing RGB and thermal-blended inputs with YOLOv8.
 
 | Regular RGB detection | Multispectral (RGB + IR) detection |
 |---|---|
@@ -43,6 +33,11 @@ Original Figure 8 images, extracted from the report. Click an image to inspect t
 
 </details>
 
+**Can thermal images help a compact object detector find pedestrians in low light?** This project investigates that question by comparing visible-light (RGB) images with RGB + infrared blends on the KAIST multispectral pedestrian dataset.
+
+Built for *Research Methods for Artificial Intelligence* at the **Open University of the Netherlands**, the project covers image fusion, annotation conversion, model training in Azure ML, and evaluation by lighting condition and pedestrian occlusion.
+
+[Results](#what-we-found) · [Explore the project](#explore-the-project) · [Run the experiment](#run-the-experiment) · [Research report](docs/RMAI_report_yolov8.pdf)
 
 > **The finding:** infrared blending offers modest benefits at night and under heavy occlusion. Its value depends on the scene: daytime performance and stricter localization metrics expose tradeoffs that an overall score can hide.
 
