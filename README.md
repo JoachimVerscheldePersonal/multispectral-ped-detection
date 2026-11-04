@@ -8,7 +8,41 @@ Built for *Research Methods for Artificial Intelligence* at the **Open Universit
 
 [Results](#what-we-found) · [Explore the project](#explore-the-project) · [Run the experiment](#run-the-experiment) · [Research report](docs/RMAI_report_yolov8.pdf)
 
-![Nighttime pedestrian detection: RGB control versus infrared-blended input](figures/Person_PR_night_control_vs_blended.png)
+## See the difference at night
+
+The same nighttime scene, evaluated with the RGB control model and the RGB + infrared blended model:
+
+| Regular RGB detection | Multispectral (RGB + IR) detection |
+|---|---|
+| ![Nighttime RGB image: no pedestrian bounding boxes predicted in this scene](figures/readme/night-rgb-example.png) | ![Same nighttime scene with infrared blending: two pedestrians have predicted bounding boxes](figures/readme/night-blended-example.png) |
+
+**Two pedestrians missed in the RGB example are detected in the blended example.** These are the original predictions shown in Figure 8 of the [research report](docs/RMAI_report_yolov8.pdf), with the first scene extracted from each row. Boxes and labels are preserved as recorded. This illustrates a favorable case; the aggregate results below show where the method helps and where it loses performance.
+
+### What does a multispectral image look like?
+
+A separate nighttime scene from Figure 3 of the report shows how the inputs combine:
+
+| Visible camera (RGB) | Thermal camera (IR) | Blended input (RGB + IR) |
+|---|---|---|
+| ![Original visible-light nighttime image](figures/readme/visible.png) | ![Corresponding thermal image showing pedestrian heat signatures](figures/readme/thermal.png) | ![RGB and thermal lightness blended into a three-channel image](figures/readme/blended.jpg) |
+
+The pedestrians on the right are difficult to see in the visible image. Thermal information makes them stand out in the blended input while retaining the road scene's visible colors. These input examples have no detection boxes.
+
+<details>
+<summary>View all four nighttime detection examples from the report</summary>
+
+**Regular RGB predictions**
+
+![Four nighttime scenes with RGB model predictions](figures/readme/night-rgb-detections.jpg)
+
+**Multispectral RGB + IR predictions, in the same scene order**
+
+![The same four nighttime scenes with blended model predictions](figures/readme/night-blended-detections.jpg)
+
+Original Figure 8 images, extracted from the report. Click an image to inspect the bounding boxes at full resolution.
+
+</details>
+
 
 > **The finding:** infrared blending offers modest benefits at night and under heavy occlusion. Its value depends on the scene: daytime performance and stricter localization metrics expose tradeoffs that an overall score can hide.
 
